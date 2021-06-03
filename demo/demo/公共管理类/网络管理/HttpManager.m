@@ -16,6 +16,9 @@ typedef NS_ENUM(NSInteger, NSPUIImageType) {
     NSPUIImageType_Unknown
 };
 
+static NSSting *baseHost = @"";
+static NSSting *testHost = @"";
+
 @interface HttpManager ()
 
 @end
@@ -56,10 +59,10 @@ typedef NS_ENUM(NSInteger, NSPUIImageType) {
     if ([[HttpManager share] isDevelopmentMode]) {//是开发环境
 //#warning testServerHost
         urlScheme = @"http://";
-        urlHost = @"qkjsapp.yexianhongmeng.cn";
+        urlHost = baseHost;
     } else {
         urlScheme = @"http://";
-        urlHost = @"lqjy.zhongxinyipai.com";
+        urlHost = testHost;
     }
     
     if (port.length) {
