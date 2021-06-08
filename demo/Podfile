@@ -13,5 +13,6 @@ target 'demo' do
   pod 'JSONModel'
   pod 'MJRefresh'
   pod 'IQKeyboardManager'
+  pod 'ReactiveObjC'
 
 end

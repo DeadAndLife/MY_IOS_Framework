@@ -58,6 +58,7 @@ shouldPrevent = NO; \
 #import "MBProgressHUD.h"
 #import "SDWebImage.h"
 #import <JSONModel.h>
+#import <RACCommand.h>
 //#import <QMUIKit.h>
 
 #import "ShowAlertTipHelper.h"
@@ -89,7 +90,7 @@ shouldPrevent = NO; \
 
 //未接入接口测试逻辑用
 #ifdef DEBUG
-#define SuccessResponse(data) @{@"code":@(CODE_SUCCESS), @"message":@"请求成功", @"data":data}
+#define SuccessResponse(data) @{CODE_KEY:@(CODE_SUCCESS), MSG_KEY:@"请求成功", @"data":data}
 #endif
 
 #endif /* config_pch */
