@@ -8,7 +8,10 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking.h>
 
-#define CODE_SUCCESS 200
+#define CODE_SUCCESS 1
+#define NEED_LOGIN 404
+#define CODE_KEY @"code"
+#define MSG_KEY @"msg"
 
 #define hostAutoChange(urlString, portSting) [HttpManager hostAutoChange:urlString port:portSting]
 

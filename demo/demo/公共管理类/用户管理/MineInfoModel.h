@@ -17,12 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// <#Description#>
 @property (nonatomic, copy) NSString *id;
 
-/// <#Description#>
-@property (nonatomic, copy) NSString *name;
-
-/// <#Description#>
-@property (nonatomic, copy) NSString *phone;
-
 /// 清空数据
 - (void)reset;
 

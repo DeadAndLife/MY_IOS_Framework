@@ -16,8 +16,8 @@ typedef NS_ENUM(NSInteger, NSPUIImageType) {
     NSPUIImageType_Unknown
 };
 
-static NSSting *baseHost = @"";
-static NSSting *testHost = @"";
+static NSString *baseHost = @"";
+static NSString *testHost = @"";
 
 @interface HttpManager ()
 
@@ -36,8 +36,9 @@ static NSSting *testHost = @"";
 
 - (void)resetUserToken {
     NSString *userToken = [[UserManger share] getUserToken];
-    [_sessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"XX-Token"];
-    [_jsonSessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"XX-Token"];
+    userToken = [McryptManager encryptUseAESForString:userToken key:McryptKey];
+    [_sessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"token"];
+    [_jsonSessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"token"];
 }
 
 - (BOOL)isDevelopmentMode {
@@ -57,12 +58,17 @@ static NSSting *testHost = @"";
     NSString *urlHost;
     NSString *urlScheme;
     if ([[HttpManager share] isDevelopmentMode]) {//是开发环境
-//#warning testServerHost
         urlScheme = @"http://";
-        urlHost = baseHost;
+#ifdef DEBUG
+        NSDictionary *nowHost = [[APPSettingManager shared] nowHost];
+        urlHost = [nowHost safeValueForKey:@"host"];
+#endif
+        if (![urlHost isNotEmpty]) {
+            urlHost = testHost;
+        }
     } else {
         urlScheme = @"http://";
-        urlHost = testHost;
+        urlHost = baseHost;
     }
     
     if (port.length) {
@@ -82,10 +88,8 @@ static NSSting *testHost = @"";
         configuration.timeoutIntervalForRequest =  30;
         
         _sessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:[configuration copy]];
+        _sessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
         _sessionManager.operationQueue.maxConcurrentOperationCount = 10;
-        
-//        [_sessionManager.requestSerializer setValue:[HTTPNetworking userAgent] forHTTPHeaderField:@"User-Agent"];
-//        XX-Device-Type
         
         NSMutableSet *set = [NSMutableSet setWithSet:_sessionManager.responseSerializer.acceptableContentTypes];
         [set addObject:@"text/html"];
@@ -98,26 +102,18 @@ static NSSting *testHost = @"";
         NSString *userToken = [[UserManger share] getUserToken];
         NSLog(@"userToken:%@", userToken);
         if (userToken) {
-            [_sessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"XX-Token"];
+            userToken = [McryptManager encryptUseAESForString:userToken key:McryptKey];
+            [_sessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"token"];
         }
-        [_sessionManager.requestSerializer setValue:@"iphone" forHTTPHeaderField:@"XX-Device-Type"];
-        
-        //获取版本号
-        NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-        NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-        [_sessionManager.requestSerializer setValue:app_Version forHTTPHeaderField:@"XX-Versioncode"];
         
         _jsonSessionManager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:[configuration copy]];
         _jsonSessionManager.operationQueue.maxConcurrentOperationCount = 10;
         _jsonSessionManager.requestSerializer = [AFJSONRequestSerializer serializer];
 
-        [_jsonSessionManager.requestSerializer setValue:@"application/json;multipart/form-data;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+        [_jsonSessionManager.requestSerializer setValue:@"multipart/form-data;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
         if (userToken) {
-            [_jsonSessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"XX-Token"];
+            [_jsonSessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"token"];
         }
-        [_jsonSessionManager.requestSerializer setValue:app_Version forHTTPHeaderField:@"XX-Versioncode"];
-        [_jsonSessionManager.requestSerializer setValue:@"iphone" forHTTPHeaderField:@"XX-Device-Type"];
-        
     }
     return self;
 }
@@ -126,68 +122,10 @@ static NSSting *testHost = @"";
                     parameters:(id)parameters
                   networkBlock:(NetworkBlock)networkBlock {
     //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
+    NSDictionary *headers = [self headerPretreatment];
     
     NSURLSessionDataTask *task = [_sessionManager POST:URLString parameters:parameters headers:headers progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (responseObject) {
-            NSDictionary *responseDict = (NSDictionary *)responseObject;
-            
-            //抓包存储，
-            NSFileManager *fildManager = [NSFileManager defaultManager];
-            NSString *docPath = [NSString stringWithFormat:@"%@/Documents/接口抓包/",NSHomeDirectory()];
-            BOOL isDir;
-            [fildManager fileExistsAtPath:docPath isDirectory:&isDir];
-            if (!isDir) {
-                NSError *errorDirectory = nil;
-                BOOL createSuccess = [fildManager createDirectoryAtPath:docPath withIntermediateDirectories:true attributes:nil error:&errorDirectory];
-                if (createSuccess) {
-                    //写入数据
-                }
-            }
-            
-            NSURL *url = [NSURL URLWithString:URLString];
-            NSString *newPathComponent = [url.path stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
-            NSString *filePath = [docPath stringByAppendingFormat:@"%@.txt", newPathComponent];
-            if (![fildManager fileExistsAtPath:filePath]) {
-                if ([responseDict safeValueForKey:@"data"]) {
-                    NSError *saveError = nil;
-                    NSData *responseData = [NSJSONSerialization dataWithJSONObject:responseObject options:0 error:nil];
-                    if ([responseData writeToFile:filePath options:NSDataWritingAtomic error:&saveError]) {
-                        NSLog(@"写入数据到%@", filePath);
-                    } else {
-                        NSLog(@"写入失败%@\n%@", filePath, saveError);
-                    }
-                }
-            }
-            
-            NSString *message = [responseDict safeValueForKey:@"msg"];
-            NSInteger code = [[responseDict safeValueForKey:@"code"] integerValue];
-            switch (code) {
-                case 10001:{
-                    //用户未登录(在其他设备登录后token被清空)
-//                    [ShowAlertTipHelper showInView:[UIApplication sharedApplication].keyWindow text:message time:0.5f completeBlock:^{
-//                        [(AppDelegate *)[UIApplication sharedApplication].delegate setRootLoginViewController];
-//                    }];
-                }
-                    break;
-                default:{
-                    if (networkBlock) {
-                        networkBlock(responseObject, nil);
-                    }
-                }
-                    break;
-            }
-        }
+        [self responsePretreatment:responseObject task:task block:networkBlock];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (networkBlock) {
             networkBlock(nil, error);
@@ -200,42 +138,11 @@ static NSSting *testHost = @"";
 - (NSURLSessionDataTask *)GET:(NSString *)URLString
                    parameters:(id)parameters
                  networkBlock:(NetworkBlock)networkBlock {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
+    NSDictionary *headers = [self headerPretreatment];
     
     NSURLSessionDataTask *task = [_sessionManager GET:URLString parameters:parameters headers:headers progress:^(NSProgress * _Nonnull downloadProgress) {
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (responseObject) {
-            NSDictionary *responseDict = (NSDictionary *)responseObject;
-
-            NSString *message = [responseDict safeValueForKey:@"msg"];
-            NSInteger code = [[responseDict safeValueForKey:@"code"] integerValue];
-            switch (code) {
-                case 10001:{
-                    //用户未登录(在其他设备登录后token被清空)
-//                    [ShowAlertTipHelper showInView:[UIApplication sharedApplication].keyWindow text:message time:0.5f completeBlock:^{
-//                        [(AppDelegate *)[UIApplication sharedApplication].delegate setRootLoginViewController];
-//                    }];
-                }
-                    break;
-                default:{
-                    if (networkBlock) {
-                        networkBlock(responseObject, nil);
-                    }
-                }
-                    break;
-            }
-        }
+        [self responsePretreatment:responseObject task:task block:networkBlock];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (networkBlock) {
             networkBlock(nil, error);
@@ -250,19 +157,8 @@ static NSSting *testHost = @"";
      constructingBodyWithBlock:(nullable void (^)(id<AFMultipartFormData> _Nonnull))block
                        success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                        failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
-    
+    NSDictionary *headers = [self headerPretreatment];
+    //直接处理结果，原样返回即可
     return [_sessionManager POST:URLString parameters:parameters headers:headers constructingBodyWithBlock:block progress:nil success:success failure:failure];
 }
 
@@ -270,19 +166,8 @@ static NSSting *testHost = @"";
                    parameters:(id)parameters
                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
-    
+    NSDictionary *headers = [self headerPretreatment];
+    //直接处理结果，原样返回即可
     return [_sessionManager GET:URLString parameters:parameters headers:headers progress:nil success:success failure:failure];
 }
 
@@ -290,19 +175,8 @@ static NSSting *testHost = @"";
                        parameters:(id)parameters
                           success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                           failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
-    
+    NSDictionary *headers = [self headerPretreatment];
+    //直接处理结果，原样返回即可
     return [_jsonSessionManager GET:URLString parameters:parameters headers:headers progress:nil success:success failure:failure];
 }
 
@@ -310,19 +184,8 @@ static NSSting *testHost = @"";
                         parameters:(id)parameters
                            success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
                            failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
-    
+    NSDictionary *headers = [self headerPretreatment];
+    //直接处理结果，原样返回即可
     return [_jsonSessionManager POST:URLString parameters:parameters headers:headers progress:nil success:success failure:failure];
 }
 
@@ -335,19 +198,8 @@ static NSSting *testHost = @"";
 
 #pragma mark 上传图片
 - (void)uploadImageWithURLString:(NSString *)URLString photos:(NSArray *)photos imageNames:(NSArray *)imageNames params:(NSDictionary *)params progress:(nullable void (^)(NSProgress * _Nonnull))uploadProgress block:(NetworkBlock)networkBlock {
-    //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSString *time = [McryptManager encryptUseAESForString:timeString key:McryptSecretKey];
-    NSString *encrypt = [McryptManager encryptUseAESForString:[NSString stringWithFormat:@"qukanjisu%@", timeString] key:McryptSecretKey];
-    
-    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([time isNotEmpty]) {
-        [headers setValue:time forKey:@"XX-Time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"XX-Encrypt"];
-    }
-    
+    NSDictionary *headers = [self headerPretreatment];
+    //直接处理结果，原样返回即可
     [_sessionManager POST:URLString parameters:params headers:headers constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         
 //        RALog(@"%@====>%@", params, formData);
@@ -416,31 +268,97 @@ static NSSting *testHost = @"";
             uploadProgress(progress);
         }
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (responseObject) {
-            NSDictionary *responseDict = (NSDictionary *)responseObject;
-            NSString *message = [responseDict safeValueForKey:@"msg"];
-            NSInteger code = [[responseDict safeValueForKey:@"code"] integerValue];
-            switch (code) {
-                case 10001:{
-                    //用户未登录(在其他设备登录后token被清空)
-//                    [ShowAlertTipHelper showInView:[UIApplication sharedApplication].keyWindow text:message time:0.5f completeBlock:^{
-//                        [(AppDelegate *)[UIApplication sharedApplication].delegate setRootLoginViewController];
-//                    }];
-                }
-                    break;
-                default:{
-                    if (networkBlock) {
-                        networkBlock(responseObject, nil);
-                    }
-                }
-                    break;
-            }
-        }
+        [self responsePretreatment:responseObject task:task block:networkBlock];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (networkBlock) {
             networkBlock(nil, error);
         }
     }];
+}
+
+- (NSDictionary *)headerPretreatment {
+    //手动增加header内容
+    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
+    NSDictionary *dict = @{
+        @"time":timeString,
+        @"client_type":@"iPhone",
+        @"version":[[APPSettingManager shared] appVersion]
+    };
+    NSString *signSting = [NSString jsonToJSONString:dict];
+    signSting = [signSting stringByReplacingOccurrencesOfString:@" " withString:@""];
+    signSting = [signSting stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    NSString *encrypt = [McryptManager encryptUseAESForString:signSting key:McryptKey];
+    NSMutableDictionary *headers = [NSMutableDictionary dictionary];
+    if ([timeString isNotEmpty]) {
+        [headers setValue:timeString forKey:@"time"];
+    }
+    if ([encrypt isNotEmpty]) {
+        [headers setValue:encrypt forKey:@"sign"];
+    }
+    
+    return headers;
+}
+
+- (void)responsePretreatment:(id)responseObject task:(NSURLSessionDataTask *)task block:(NetworkBlock)block {
+    if (responseObject) {
+        NSDictionary *responseDict = [McryptManager decryptUseAESForData:responseObject key:McryptKey];
+
+        NSString *message = [responseDict safeValueForKey:MSG_KEY];
+        NSInteger code = [[responseDict safeValueForKey:CODE_KEY] integerValue];
+        switch (code) {
+            case NEED_LOGIN:{
+                //用户未登录(在其他设备登录后token被清空)
+                [ShowAlertTipHelper showInView:[UIApplication sharedApplication].keyWindow text:message time:0.6f completeBlock:^{
+                    [[UserManger share] logout];
+                }];
+            }
+                break;
+            default:{
+                if (block) {
+                    block(responseDict, nil);
+                }
+            }
+                break;
+        }
+    } else {
+        //不存在响应信息
+    }
+    
+    if (responseObject) {
+        NSDictionary *responseDict = [McryptManager decryptUseAESForData:responseObject key:McryptKey];
+        
+        //抓包存储，
+        NSFileManager *fildManager = [NSFileManager defaultManager];
+        NSString *docPath = [NSString stringWithFormat:@"%@/Documents/接口抓包/",NSHomeDirectory()];
+        BOOL isDir, createSuccess;
+        [fildManager fileExistsAtPath:docPath isDirectory:&isDir];
+        if (!isDir) {
+            NSError *errorDirectory = nil;
+            createSuccess = [fildManager createDirectoryAtPath:docPath withIntermediateDirectories:true attributes:nil error:&errorDirectory];
+        } else {
+            createSuccess = true;
+        }
+        if (createSuccess) {
+            //写入数据
+            NSURL *url = task.currentRequest.URL;
+            NSString *newPathComponent = [url.path stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
+            NSString *filePath = [docPath stringByAppendingFormat:@"%@.txt", newPathComponent];
+            if ([responseDict safeValueForKey:@"data"]) {
+                [responseDict setValue:@([NSDate date].timeIntervalSince1970) forKey:@"requestTime"];
+//                    if (![fildManager fileExistsAtPath:filePath]) {
+                NSError *saveError = nil;
+                NSData *responseData = [NSJSONSerialization dataWithJSONObject:responseDict options:0 error:&saveError];
+                if ([responseData writeToFile:filePath options:NSDataWritingAtomic error:&saveError]) {
+                    NSLog(@"写入数据到%@", filePath);
+                } else {
+                    NSLog(@"写入失败%@\n%@", filePath, saveError);
+                }
+//                    } else {
+//
+//                    }
+            }
+        }
+    }
 }
 
 

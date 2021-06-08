@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8658918F266F43810080815F /* ChangeHostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8658918E266F43810080815F /* ChangeHostViewController.m */; };
+		865891A5266F441A0080815F /* NSArray+SafeArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 86589191266F44170080815F /* NSArray+SafeArray.m */; };
+		865891A6266F441A0080815F /* NSDictionary+SafeDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 86589193266F44170080815F /* NSDictionary+SafeDictionary.m */; };
+		865891A7266F441A0080815F /* NSString+EmptyString.m in Sources */ = {isa = PBXBuildFile; fileRef = 86589196266F44180080815F /* NSString+EmptyString.m */; };
+		865891A8266F441A0080815F /* UIApplication+ScreenSize.m in Sources */ = {isa = PBXBuildFile; fileRef = 86589198266F44180080815F /* UIApplication+ScreenSize.m */; };
+		865891A9266F441A0080815F /* NSDate+Exchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 8658919B266F44180080815F /* NSDate+Exchange.m */; };
+		865891AA266F441A0080815F /* NSObject+RANotifaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 8658919D266F44180080815F /* NSObject+RANotifaction.m */; };
+		865891AB266F441A0080815F /* UIImage+TempImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 8658919E266F44180080815F /* UIImage+TempImage.m */; };
+		865891AC266F441A0080815F /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 865891A2266F44190080815F /* UIColor+HexColor.m */; };
+		865891AD266F441A0080815F /* UIViewController+VisableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865891A3266F44190080815F /* UIViewController+VisableViewController.m */; };
+		865891AE266F441A0080815F /* UIView+QKView.m in Sources */ = {isa = PBXBuildFile; fileRef = 865891A4266F441A0080815F /* UIView+QKView.m */; };
 		867A343F2668C9B100719221 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 867A343E2668C9B100719221 /* AppDelegate.m */; };
 		867A34482668C9B100719221 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 867A34462668C9B100719221 /* Main.storyboard */; };
 		867A344A2668C9B400719221 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 867A34492668C9B400719221 /* Assets.xcassets */; };
@@ -35,6 +46,28 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8658918D266F43810080815F /* ChangeHostViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangeHostViewController.h; sourceTree = "<group>"; };
+		8658918E266F43810080815F /* ChangeHostViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangeHostViewController.m; sourceTree = "<group>"; };
+		86589191266F44170080815F /* NSArray+SafeArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+SafeArray.m"; sourceTree = "<group>"; };
+		86589192266F44170080815F /* NSObject+RANotifaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+RANotifaction.h"; sourceTree = "<group>"; };
+		86589193266F44170080815F /* NSDictionary+SafeDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+SafeDictionary.m"; sourceTree = "<group>"; };
+		86589194266F44170080815F /* UIImage+TempImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+TempImage.h"; sourceTree = "<group>"; };
+		86589195266F44170080815F /* UIApplication+ScreenSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+ScreenSize.h"; sourceTree = "<group>"; };
+		86589196266F44180080815F /* NSString+EmptyString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+EmptyString.m"; sourceTree = "<group>"; };
+		86589197266F44180080815F /* NSDate+Exchange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Exchange.h"; sourceTree = "<group>"; };
+		86589198266F44180080815F /* UIApplication+ScreenSize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+ScreenSize.m"; sourceTree = "<group>"; };
+		86589199266F44180080815F /* NSDictionary+SafeDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+SafeDictionary.h"; sourceTree = "<group>"; };
+		8658919A266F44180080815F /* NSString+EmptyString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+EmptyString.h"; sourceTree = "<group>"; };
+		8658919B266F44180080815F /* NSDate+Exchange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Exchange.m"; sourceTree = "<group>"; };
+		8658919C266F44180080815F /* NSArray+SafeArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SafeArray.h"; sourceTree = "<group>"; };
+		8658919D266F44180080815F /* NSObject+RANotifaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+RANotifaction.m"; sourceTree = "<group>"; };
+		8658919E266F44180080815F /* UIImage+TempImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+TempImage.m"; sourceTree = "<group>"; };
+		8658919F266F44190080815F /* UIView+QKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+QKView.h"; sourceTree = "<group>"; };
+		865891A0266F44190080815F /* UIViewController+VisableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+VisableViewController.h"; sourceTree = "<group>"; };
+		865891A1266F44190080815F /* UIColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexColor.h"; sourceTree = "<group>"; };
+		865891A2266F44190080815F /* UIColor+HexColor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HexColor.m"; sourceTree = "<group>"; };
+		865891A3266F44190080815F /* UIViewController+VisableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+VisableViewController.m"; sourceTree = "<group>"; };
+		865891A4266F441A0080815F /* UIView+QKView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+QKView.m"; sourceTree = "<group>"; };
 		867A343A2668C9B100719221 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		867A343D2668C9B100719221 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		867A343E2668C9B100719221 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -95,6 +128,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8658918B266F434C0080815F /* DEBUG模式下附加功能 */ = {
+			isa = PBXGroup;
+			children = (
+				8658918C266F435F0080815F /* 切换服务器 */,
+			);
+			path = "DEBUG模式下附加功能";
+			sourceTree = "<group>";
+		};
+		8658918C266F435F0080815F /* 切换服务器 */ = {
+			isa = PBXGroup;
+			children = (
+				8658918D266F43810080815F /* ChangeHostViewController.h */,
+				8658918E266F43810080815F /* ChangeHostViewController.m */,
+			);
+			path = "切换服务器";
+			sourceTree = "<group>";
+		};
 		867A34312668C9B100719221 = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +184,26 @@
 		867A34592668CA1500719221 /* 公共扩展方法 */ = {
 			isa = PBXGroup;
 			children = (
+				8658919C266F44180080815F /* NSArray+SafeArray.h */,
+				86589191266F44170080815F /* NSArray+SafeArray.m */,
+				86589197266F44180080815F /* NSDate+Exchange.h */,
+				8658919B266F44180080815F /* NSDate+Exchange.m */,
+				86589199266F44180080815F /* NSDictionary+SafeDictionary.h */,
+				86589193266F44170080815F /* NSDictionary+SafeDictionary.m */,
+				86589192266F44170080815F /* NSObject+RANotifaction.h */,
+				8658919D266F44180080815F /* NSObject+RANotifaction.m */,
+				8658919A266F44180080815F /* NSString+EmptyString.h */,
+				86589196266F44180080815F /* NSString+EmptyString.m */,
+				86589195266F44170080815F /* UIApplication+ScreenSize.h */,
+				86589198266F44180080815F /* UIApplication+ScreenSize.m */,
+				865891A1266F44190080815F /* UIColor+HexColor.h */,
+				865891A2266F44190080815F /* UIColor+HexColor.m */,
+				86589194266F44170080815F /* UIImage+TempImage.h */,
+				8658919E266F44180080815F /* UIImage+TempImage.m */,
+				8658919F266F44190080815F /* UIView+QKView.h */,
+				865891A4266F441A0080815F /* UIView+QKView.m */,
+				865891A0266F44190080815F /* UIViewController+VisableViewController.h */,
+				865891A3266F44190080815F /* UIViewController+VisableViewController.m */,
 			);
 			path = "公共扩展方法";
 			sourceTree = "<group>";
@@ -177,7 +247,7 @@
 		867A345D2668CA4100719221 /* 功能模块 */ = {
 			isa = PBXGroup;
 			children = (
-				867A34612668CA5C00719221 /* 个人信息 */,
+				8658918B266F434C0080815F /* DEBUG模式下附加功能 */,
 				867A34602668CA5600719221 /* 引导页 */,
 				867A345F2668CA5000719221 /* 注册登录 */,
 				867A345E2668CA4900719221 /* 隐私弹窗 */,
@@ -218,13 +288,6 @@
 				867A34632668CABB00719221 /* GuideViewController.m */,
 			);
 			path = "引导页";
-			sourceTree = "<group>";
-		};
-		867A34612668CA5C00719221 /* 个人信息 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "个人信息";
 			sourceTree = "<group>";
 		};
 		867A348B2668CB0200719221 /* 应用设置 */ = {
@@ -347,6 +410,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8658918F266F43810080815F /* ChangeHostViewController.m in Sources */,
+				865891AC266F441A0080815F /* UIColor+HexColor.m in Sources */,
+				865891A5266F441A0080815F /* NSArray+SafeArray.m in Sources */,
 				867A34972668CB2100719221 /* MineInfoModel.m in Sources */,
 				867A34732668CAC500719221 /* ForgotPasswordViewController.m in Sources */,
 				867A34722668CAC500719221 /* HttpManager+Login.m in Sources */,
@@ -355,18 +421,26 @@
 				867A34882668CADD00719221 /* BaseTabBarController.m in Sources */,
 				867A349E2668CB2A00719221 /* McryptManager.m in Sources */,
 				867A349D2668CB2A00719221 /* HttpManager.m in Sources */,
+				865891A7266F441A0080815F /* NSString+EmptyString.m in Sources */,
 				867A343F2668C9B100719221 /* AppDelegate.m in Sources */,
+				865891AA266F441A0080815F /* NSObject+RANotifaction.m in Sources */,
+				865891A6266F441A0080815F /* NSDictionary+SafeDictionary.m in Sources */,
 				867A34502668C9B400719221 /* main.m in Sources */,
+				865891AB266F441A0080815F /* UIImage+TempImage.m in Sources */,
 				867A34852668CADD00719221 /* BaseNavigationController.m in Sources */,
 				867A34892668CADD00719221 /* BaseTableViewController.m in Sources */,
+				865891AE266F441A0080815F /* UIView+QKView.m in Sources */,
 				867A34A42668CB8600719221 /* JSONModel+SaveModel.m in Sources */,
 				867A34A82668CB9100719221 /* ShowAlertTipHelper.m in Sources */,
 				867A34862668CADD00719221 /* BaseWKWebViewController.m in Sources */,
 				867A34902668CB1A00719221 /* APPSettingManager.m in Sources */,
 				867A34792668CAD000719221 /* PrivacyAlertController.m in Sources */,
+				865891A9266F441A0080815F /* NSDate+Exchange.m in Sources */,
 				867A34652668CABB00719221 /* GuideViewController.m in Sources */,
+				865891AD266F441A0080815F /* UIViewController+VisableViewController.m in Sources */,
 				867A34752668CAC500719221 /* LoginModular.m in Sources */,
 				867A34962668CB2100719221 /* UserManger.m in Sources */,
+				865891A8266F441A0080815F /* UIApplication+ScreenSize.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

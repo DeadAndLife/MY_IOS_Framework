@@ -6,6 +6,7 @@
 //
 
 #import "MineInfoModel.h"
+#import "JSONModelClassProperty.h"
 
 #define UserInfoPath  [NSString stringWithFormat:@"%@/Documents/userInfo.user",NSHomeDirectory()]
 
@@ -16,7 +17,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSDictionary *dataDict = [NSDictionary dictionaryWithContentsOfFile:UserInfoPath];
-        obj = [[MineInfoModel alloc] initSaveModelWithDict:dataDict error:nil];
+        obj = [[MineInfoModel alloc] initWithDictionary:dataDict error:nil];
         if (!obj) {
             obj = [[MineInfoModel alloc] init];
         }
@@ -31,15 +32,14 @@
     return true;
 }
 
-+ (JSONKeyMapper *)keyMapper {
-    return [[JSONKeyMapper alloc] initWithModelToJSONDictionary:@{
-        @"token":@"_token"
-    }];
-}
+//+ (JSONKeyMapper *)keyMapper {
+//    return [[JSONKeyMapper alloc] initWithModelToJSONDictionary:@{
+//        @"token":@"_token"
+//    }];
+//}
 
 + (NSArray<NSString *> *)skipPropertyName {
     return @[
-        @"User_type"
     ];
 }
 
@@ -60,6 +60,17 @@
     if ([[NSFileManager defaultManager] fileExistsAtPath:UserInfoPath]) {
         [[NSFileManager defaultManager] removeItemAtPath:UserInfoPath error:nil];
     }
+//    NSArray *propertiesList = [self performSelector:@selector(__properties__)];
+//    //全部内容置空
+//    for (JSONModelClassProperty *property in propertiesList) {
+//        [self setValue:nil forKey:property.name];
+//    }
+}
+
+- (void)sharedSaveModelWithDict:(NSDictionary *)dict error:(NSError *__autoreleasing  _Nullable *)error {
+    [super sharedSaveModelWithDict:dict error:error];
+    
+    [[self toDictionary] writeToFile:UserInfoPath atomically:true];
 }
 
 @end

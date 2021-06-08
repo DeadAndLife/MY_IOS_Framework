@@ -18,6 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param error 错误信息
 - (id)initSaveModelWithDict:(NSDictionary *)dict error:(NSError **)error;
 
+/// 单例类存储位置方法 不适用于嵌套model
+/// @param dict 替换参数字典
+/// @param error 错误信息
+- (void)sharedSaveModelWithDict:(NSDictionary *)dict error:(NSError **)error;
+
 @end
 
 NS_ASSUME_NONNULL_END

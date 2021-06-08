@@ -22,13 +22,11 @@
 - (void)begin {
     LoginViewController *vc = [[LoginViewController alloc] init];
     BaseNavigationController *navc = [[BaseNavigationController alloc] initWithRootViewController:vc];
-    UIWindow *keywindow = [UIApplication sharedApplication].keyWindow;
-    if (!keywindow) {
-        keywindow = [UIApplication sharedApplication].windows.firstObject;
-    }
-    keywindow.rootViewController = navc;
-    keywindow.backgroundColor = [UIColor whiteColor];
-    [keywindow makeKeyAndVisible];
+    
+    UIViewController *visibleVC = [UIViewController MY_visibleViewController];
+    
+    [visibleVC presentViewController:navc animated:true completion:^{
+    }];
 }
 
 @end

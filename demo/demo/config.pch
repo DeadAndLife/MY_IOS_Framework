@@ -1,8 +1,8 @@
 //
 //  config.pch
-//  demo
+//  zhibo
 //
-//  Created by iOSzhang Inc on 21/6/3.
+//  Created by iOSzhang Inc on 21/5/31.
 //
 
 #ifndef config_pch
@@ -10,5 +10,86 @@
 
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#define SCREEN_W [UIScreen mainScreen].bounds.size.width
+#define SCREEN_H [UIScreen mainScreen].bounds.size.height
+
+/*随机色
+ */
+#define ranCol(alph) [UIColor colorWithRed:(arc4random() % 255) / 255.0 green:(arc4random() % 255) / 255.0 blue:(arc4random() % 255) / 255.0 alpha:alph]
+/*R,G,B    请使用255色，即0~255
+ * A            透明度，0~1
+ */
+#define colRGB(R,G,B,A) [UIColor colorWithRed:R / 255.0 green:G / 255.0 blue:B / 255.0 alpha:A]
+/**
+ hex色值转换
+ 
+ @param rgbValue hex色值，使用0x开头
+ @param alpha 透明度
+ @return 最终色值
+ */
+#define colHEX(rgbValue, A) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:A]
+
+/* 使用范围判断屏蔽因浮点误差等原因出现的误差减少运算量 */
+#define Auto_size(originSize) (SCREEN_W < 376 && SCREEN_W > 374 ? originSize : SCREEN_W/375.0f*originSize)
+/* 设置最小值缩放，375及以上缩放，否则同尺寸*/
+#define Min_Auto_size(originSize) (SCREEN_W <= 376 ? originSize : SCREEN_W/375.0f*originSize)
+/* 设置最大值缩放，375及以下缩放，否则同尺寸*/
+#define Max_Auto_size(originSize) (SCREEN_W >= 374 ? originSize : SCREEN_W/375.0f*originSize)
+
+#define PFR @"PingFangSC-Regular"
+#define PFM @"PingFang-SC-Medium"
+#define PFB @"PingFangSC-Semibold"
+
+#define WeakSelf(weakSelf,self)  __weak __typeof(&*self)weakSelf = self
+#define StrongSelf(StrongSelf,weakSelf)  __strong __typeof(&*weakSelf)StrongSelf = weakSelf
+
+// 防止多次调用
+#define kPreventRepeatClickTime(_seconds_) \
+static BOOL shouldPrevent; \
+if (shouldPrevent) return; \
+shouldPrevent = YES; \
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((_seconds_) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ \
+shouldPrevent = NO; \
+}); \
+
+#import "Masonry.h"
+#import "MJRefresh.h"
+#import "MBProgressHUD.h"
+#import "SDWebImage.h"
+#import <JSONModel.h>
+//#import <QMUIKit.h>
+
+#import "ShowAlertTipHelper.h"
+
+#import "NSArray+SafeArray.h"
+#import "NSDictionary+SafeDictionary.h"
+#import "NSObject+RANotifaction.h"
+#import "UIColor+HexColor.h"
+#import "NSString+EmptyString.h"
+#import "UIImage+TempImage.h"
+#import "UIApplication+ScreenSize.h"
+#import "NSDate+Exchange.h"
+#import "UIView+QKView.h"
+#import "UIViewController+VisableViewController.h"
+
+#import "BaseNavigationController.h"
+#import "BaseTabBarController.h"
+//#import "BaseWKWebViewController.h"
+
+#import "HttpManager.h"
+#import "UserManger.h"
+#import "LoginModular.h"
+#import "APPSettingManager.h"
+
+//微信配置
+#define WXAppID @""
+#define WXAppSecret @""
+#define WXUniversalLink @""
+
+//未接入接口测试逻辑用
+#ifdef DEBUG
+#define SuccessResponse(data) @{@"code":@(CODE_SUCCESS), @"message":@"请求成功", @"data":data}
+#endif
 
 #endif /* config_pch */

@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)getUserToken;
 
+- (void)setUserToken:(NSString *)userToken;
+
 - (void)logout;
 
 /// 是否登陆，如果未登录将自动转换到登陆界面，否则返回true

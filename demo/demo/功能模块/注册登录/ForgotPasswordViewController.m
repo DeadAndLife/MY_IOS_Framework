@@ -249,8 +249,8 @@
             NSLog(@"%@", responseObject);
 #endif
             NSDictionary *responseDict = (NSDictionary *)responseObject;
-            NSString *message = [responseDict safeValueForKey:@"message"];
-            NSInteger code = [[responseDict safeValueForKey:@"code"] integerValue];
+            NSString *message = [responseDict safeValueForKey:MSG_KEY];
+            NSInteger code = [[responseDict safeValueForKey:CODE_KEY] integerValue];
             
             switch (code) {
                 case CODE_SUCCESS:{
@@ -302,8 +302,8 @@
             NSLog(@"%@", responseObject);
 #endif
             NSDictionary *responseDict = (NSDictionary *)responseObject;
-            NSString *message = [responseDict safeValueForKey:@"message"];
-            NSInteger code = [[responseDict safeValueForKey:@"code"] integerValue];
+            NSString *message = [responseDict safeValueForKey:MSG_KEY];
+            NSInteger code = [[responseDict safeValueForKey:CODE_KEY] integerValue];
             
             switch (code) {
                 case CODE_SUCCESS:{
