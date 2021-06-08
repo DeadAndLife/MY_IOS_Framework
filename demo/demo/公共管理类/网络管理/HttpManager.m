@@ -35,6 +35,7 @@ static NSString *testHost = @"";
 }
 
 - (void)resetUserToken {
+    //token这里使用加密添加，具体请根据自己项目要求添加
     NSString *userToken = [[UserManger share] getUserToken];
     userToken = [McryptManager encryptUseAESForString:userToken key:McryptKey];
     [_sessionManager.requestSerializer setValue:userToken forHTTPHeaderField:@"token"];
@@ -278,23 +279,8 @@ static NSString *testHost = @"";
 
 - (NSDictionary *)headerPretreatment {
     //手动增加header内容
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", NSDate.date.timeIntervalSince1970];
-    NSDictionary *dict = @{
-        @"time":timeString,
-        @"client_type":@"iPhone",
-        @"version":[[APPSettingManager shared] appVersion]
-    };
-    NSString *signSting = [NSString jsonToJSONString:dict];
-    signSting = [signSting stringByReplacingOccurrencesOfString:@" " withString:@""];
-    signSting = [signSting stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    NSString *encrypt = [McryptManager encryptUseAESForString:signSting key:McryptKey];
+    //请根据自己项目要求添加
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
-    if ([timeString isNotEmpty]) {
-        [headers setValue:timeString forKey:@"time"];
-    }
-    if ([encrypt isNotEmpty]) {
-        [headers setValue:encrypt forKey:@"sign"];
-    }
     
     return headers;
 }
